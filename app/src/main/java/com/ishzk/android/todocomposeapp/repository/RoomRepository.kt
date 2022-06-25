@@ -1,9 +1,6 @@
 package com.ishzk.android.todocomposeapp.repository
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.ishzk.android.todocomposeapp.model.Todo
 
 @Dao
@@ -13,4 +10,9 @@ interface TodoDao{
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertTodo(todo: Todo)
+}
+
+@Database(entities = [Todo::class], version = 1, exportSchema = false)
+abstract class TodoDatabase: RoomDatabase(){
+    abstract fun todoDao(): TodoDao
 }
