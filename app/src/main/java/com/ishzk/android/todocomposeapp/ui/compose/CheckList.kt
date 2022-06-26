@@ -16,13 +16,15 @@ import com.ishzk.android.todocomposeapp.model.Todo
 import com.ishzk.android.todocomposeapp.viewmodel.MainViewModel
 
 @Composable
-fun CheckListItem(id: Int, title: String = "", done: Boolean = false, onDelete: (Int) -> Unit){
+fun CheckListItem(item: Todo, onUpdate: (Todo)-> Unit, onDelete: (Int) -> Unit){
     val menuState = remember { mutableStateOf(false) }
     Row{
-        val checkedState = remember{ mutableStateOf(done) }
-        Text(text = "$title", modifier = Modifier.align(Alignment.CenterVertically))
+        val checkedState = remember{ mutableStateOf(item.done) }
+        Text(text = "${item.title}", modifier = Modifier.align(Alignment.CenterVertically))
         Checkbox(checked = checkedState.value, onCheckedChange = {
             checkedState.value = it
+            val newItem = item.copy(done = checkedState.value)
+            onUpdate(newItem)
         })
         IconButton(onClick = { menuState.value = !menuState.value }) {
             Icon(Icons.Filled.MoreVert, "menu")
@@ -30,7 +32,7 @@ fun CheckListItem(id: Int, title: String = "", done: Boolean = false, onDelete: 
         DropdownMenu(expanded = menuState.value, onDismissRequest = { menuState.value = false }) {
             DropdownMenuItem(onClick = {
                 menuState.value = false
-                onDelete(id)
+                item.id?.let { onDelete(it) }
             }) {
                 Text(text = "Delete")
             }
@@ -41,10 +43,12 @@ fun CheckListItem(id: Int, title: String = "", done: Boolean = false, onDelete: 
 @Composable
 fun CheckList(items: List<Todo>, viewModel: MainViewModel){
     LazyColumn{
-        items(items){
-            if(it.id != null) {
-                key(it.id) {
-                    CheckListItem(it.id, "${it.title}", it.done) { id ->
+        items(items){ item ->
+            if(item.id != null) {
+                key(item.id) {
+                    CheckListItem(item, {
+                        viewModel.updateItem(it)
+                    }) { id ->
                         viewModel.deleteItem(id)
                     }
                 }

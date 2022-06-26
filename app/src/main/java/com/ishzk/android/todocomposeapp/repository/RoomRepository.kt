@@ -13,6 +13,9 @@ interface TodoDao{
 
     @Query("DELETE FROM todo WHERE id = :id")
     fun deleteTodo(id: Int)
+
+    @Update
+    fun updateTodo(todo: Todo)
 }
 
 @Database(entities = [Todo::class], version = 1, exportSchema = false)

@@ -39,4 +39,13 @@ class MainViewModel: ViewModel() {
             }
         }
     }
+
+    fun updateItem(item: Todo){
+        CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.Default){
+                RoomApplication.database.todoDao().updateTodo(item)
+                loadItems()
+            }
+        }
+    }
 }
