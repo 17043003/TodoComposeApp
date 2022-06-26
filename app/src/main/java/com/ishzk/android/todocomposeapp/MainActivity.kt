@@ -3,27 +3,29 @@ package com.ishzk.android.todocomposeapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ishzk.android.todocomposeapp.model.Todo
+import com.ishzk.android.todocomposeapp.ui.compose.AddItemForm
+import com.ishzk.android.todocomposeapp.ui.compose.CheckList
 import com.ishzk.android.todocomposeapp.ui.theme.TodoComposeAppTheme
+import com.ishzk.android.todocomposeapp.viewmodel.MainViewModel
+import java.util.*
 
 class MainActivity : ComponentActivity() {
+    private val viewModel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        viewModel.loadItems()
 
         setContent {
             TodoComposeAppTheme {
@@ -32,56 +34,33 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-
-                }
-                Column(
-                    modifier = Modifier.padding(8.dp, 16.dp)
-                ){
-                    Row {
-                        val currentItemText = remember { mutableStateOf(TextFieldValue()) }
-                        TextField(value = currentItemText.value, onValueChange = { currentItemText.value = it })
-                        addItemButton()
-                    }
-                    Row {
-                        CheckList()
-                    }
+                    MainScreen(viewModel = viewModel)
                 }
             }
         }
     }
-}
 
-@Composable
-fun CheckListItem(title: String = ""){
-    Row{
-        val checkedState = remember{ mutableStateOf(false) }
-        Text(text = "$title", modifier = Modifier.align(Alignment.CenterVertically))
-        Checkbox(checked = checkedState.value, onCheckedChange = {
-            checkedState.value = it
-        })
-    }
-}
-
-@Composable
-fun CheckList(){
-    LazyColumn{
-        items(5){
-            CheckListItem("$it")
+    @Composable
+    fun MainScreen(viewModel: MainViewModel){
+        Column(
+            modifier = Modifier.padding(8.dp, 16.dp)
+        ){
+            AddItemForm{ text ->
+                viewModel.add(
+                    Todo(title = text, done = false, deadline = Date().time)
+                )
+            }
+            CheckList(viewModel.todoLiveData)
         }
     }
 }
 
-@Composable
-fun addItemButton(text: String = ""){
-    Button(onClick = {}) {
-        Text(text = "Add")
-    }
-}
+
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     TodoComposeAppTheme {
-        CheckList()
+        CheckList(listOf(Todo(1, "test1", false, Date().time)))
     }
 }
