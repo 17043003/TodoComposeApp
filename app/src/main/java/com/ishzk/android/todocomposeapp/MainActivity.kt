@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
                     Todo(title = text, done = false, deadline = Date().time)
                 )
             }
-            CheckList(viewModel.todoLiveData)
+            CheckList(viewModel.todoLiveData, viewModel)
         }
     }
 }
@@ -61,6 +61,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     TodoComposeAppTheme {
-        CheckList(listOf(Todo(1, "test1", false, Date().time)))
+        CheckList(listOf(Todo(1, "test1", false, Date().time)), MainViewModel())
     }
 }
