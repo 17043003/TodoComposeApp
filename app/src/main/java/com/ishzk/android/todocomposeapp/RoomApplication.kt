@@ -7,7 +7,7 @@ import com.ishzk.android.todocomposeapp.repository.TodoDatabase
 
 class RoomApplication: Application() {
     companion object {
-        lateinit var database: RoomDatabase
+        lateinit var database: TodoDatabase
     }
 
     override fun onCreate() {
