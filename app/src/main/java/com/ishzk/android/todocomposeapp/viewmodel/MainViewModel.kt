@@ -29,4 +29,12 @@ class MainViewModel: ViewModel() {
             }
         }
     }
+
+    fun deleteItem(id: Int){
+        CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.Default){
+                RoomApplication.database.todoDao().deleteTodo(id)
+            }
+        }
+    }
 }

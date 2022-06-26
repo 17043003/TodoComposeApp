@@ -10,6 +10,9 @@ interface TodoDao{
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertTodo(todo: Todo)
+
+    @Query("DELETE FROM todo WHERE id = :id")
+    fun deleteTodo(id: Int)
 }
 
 @Database(entities = [Todo::class], version = 1, exportSchema = false)
