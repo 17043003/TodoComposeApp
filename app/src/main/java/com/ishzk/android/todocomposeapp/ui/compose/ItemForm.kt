@@ -14,7 +14,10 @@ fun AddItemForm(onClick: (String) -> Unit){
     val currentItemText = remember { mutableStateOf(TextFieldValue()) }
     Row {
         TextField(value = currentItemText.value, onValueChange = { currentItemText.value = it })
-        Button(onClick = { onClick(currentItemText.value.text) }) {
+        Button(onClick = {
+            onClick(currentItemText.value.text)
+            currentItemText.value = TextFieldValue("")
+        }) {
             Text(text = "Add")
         }
     }
